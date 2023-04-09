@@ -28,7 +28,7 @@ public class UserDao {
     }
 
     public User get(String id) throws ClassNotFoundException, SQLException {
-        Connection c = connectionMaker.makeConnection()ß;
+        Connection c = connectionMaker.makeConnection();
 
         PreparedStatement ps = c.prepareStatement(
                 "select * from users where id = ?"

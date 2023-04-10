@@ -1,6 +1,6 @@
 package me.kimsoar;
 
-import com.apple.eawt.ApplicationBeanInfo;
+
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
@@ -9,14 +9,9 @@ import java.sql.SQLException;
 public class UserDaoTest {
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
 
-        ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
-        UserDao dao1 = context.getBean("userDao", UserDao.class);
-        UserDao dao2 = context.getBean("userDao", UserDao.class);
+        ApplicationContext context = new AnnotationConfigApplicationContext(CountingDaoFactory.class);
+        UserDao dao = context.getBean("userDao", UserDao.class);
 
-
-        System.out.println(dao1);
-        System.out.println(dao2);
-/*
         User user = new User();
         user.setId("whiteship");
         user.setName("백기선");
@@ -30,6 +25,10 @@ public class UserDaoTest {
         System.out.println(user2.getName());
         System.out.println(user2.getPassword());
 
-        System.out.println(user2.getId() + "조회 성공");*/
+        System.out.println(user2.getId() + "조회 성공");
+
+
+        CountingConnectionMaker ccm = context.getBean("connectionMaker", CountingConnectionMaker.class);
+        System.out.println("Connection Counting: " + ccm.getCounter());
     }
 }

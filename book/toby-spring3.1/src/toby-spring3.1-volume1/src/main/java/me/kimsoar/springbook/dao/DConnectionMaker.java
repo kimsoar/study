@@ -1,4 +1,4 @@
-package me.kimsoar;
+package me.kimsoar.springbook.dao;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

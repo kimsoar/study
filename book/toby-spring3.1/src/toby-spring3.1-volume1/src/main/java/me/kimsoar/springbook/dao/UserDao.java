@@ -1,4 +1,6 @@
-package me.kimsoar;
+package me.kimsoar.springbook.dao;
+
+import me.kimsoar.springbook.model.User;
 
 import java.sql.*;
 

@@ -1,4 +1,4 @@
-package me.kimsoar;
+package me.kimsoar.springbook;
 
 import java.sql.SQLException;
 

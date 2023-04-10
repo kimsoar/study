@@ -57,3 +57,17 @@
 - 클래스 모델이나 코드에는 런타임 시점의 의존관계가 드러나지 않는다. 그러기 위해서는 인터페이스에만 의존하고 있어야 한다.
 - 런타임 시점의 의존관계는 컨테이너나 팩토리 같은 제3의 존재가 결정한다.
 - 의존관계는 사용할 오브젝트에 대한 레퍼런스를 외부에서 제공(주입)해줌으로써 만들어진다.
+
+### 1.8.1 XML 설정
+
+|             | 자바 코드 설정정보     | XML 설정정보               |
+| ----------- | ---------------------- | -------------------------- |
+| 빈 설정파일 | @Configuration         | <beans>                    |
+| 빈의 이름   | @Bean methodName()     | <bean id="methodName"      |
+| 빈의 클래스 | return new BeanClass() | class="a.b.c...BeanClass"> |
+
+> @Bean -------------------------------> <bean
+> public ConnectionMaker
+> connectionMaker() { -----------------> id="connectionMaker"
+> return new ConnectionMaker(); -------> class="springbook...DConnectionMaker" />
+> }

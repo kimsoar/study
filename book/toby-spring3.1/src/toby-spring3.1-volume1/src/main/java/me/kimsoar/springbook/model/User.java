@@ -1,4 +1,4 @@
-package me.kimsoar;
+package me.kimsoar.springbook.model;
 
 public class User {
     String id;

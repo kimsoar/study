@@ -15,6 +15,13 @@
     </properties>
 
     <dependencies>
+        <!-- https://mvnrepository.com/artifact/org.springframework/spring-jdbc -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+            <version>3.0.7.RELEASE</version>
+        </dependency>
+
         <!-- MySQL 설정 -->
         <dependency>
             <groupId>mysql</groupId>

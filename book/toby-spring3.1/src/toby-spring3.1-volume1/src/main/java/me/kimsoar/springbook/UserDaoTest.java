@@ -1,6 +1,7 @@
 package me.kimsoar.springbook;
 
 
+import me.kimsoar.springbook.dao.DataFactory;
 import me.kimsoar.springbook.dao.UserDao;
 import me.kimsoar.springbook.model.User;
 import org.springframework.context.ApplicationContext;
@@ -12,7 +13,8 @@ import java.sql.SQLException;
 public class UserDaoTest {
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
 
-        ApplicationContext context = new GenericXmlApplicationContext("applicationContext.xml");
+        // ApplicationContext context = new GenericXmlApplicationContext("applicationContext.xml");
+        ApplicationContext context = new AnnotationConfigApplicationContext(DataFactory.class);
         UserDao dao = context.getBean("userDao", UserDao.class);
 
         User user = new User();

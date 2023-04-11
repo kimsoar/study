@@ -1,6 +1,7 @@
 package me.kimsoar.springbook.dao;
 
 import me.kimsoar.springbook.model.User;
+import org.springframework.dao.EmptyResultDataAccessException;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -39,11 +40,17 @@ public class UserDao {
         ps.setString(1, id);
 
         ResultSet rs = ps.executeQuery();
-        rs.next();
-        User user = new User();
-        user.setId(rs.getString("id"));
-        user.setName(rs.getString("name"));
-        user.setPassword(rs.getString("password"));
+
+        User user = null;
+
+        if (rs.next()) {
+            user = new User();
+            user.setId(rs.getString("id"));
+            user.setName(rs.getString("name"));
+            user.setPassword(rs.getString("password"));
+        }
+
+        if (user == null) throw new EmptyResultDataAccessException(1);
 
         rs.close();
         ps.close();

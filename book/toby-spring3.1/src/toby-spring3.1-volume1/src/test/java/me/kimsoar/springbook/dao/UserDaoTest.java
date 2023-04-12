@@ -24,7 +24,9 @@ import java.sql.SQLException;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-@DirtiesContext
+// @DirtiesContext
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = "classpath:test-applicationContext.xml")
 public class UserDaoTest {
 
     @Autowired
@@ -35,10 +37,6 @@ public class UserDaoTest {
 
     @Before
     public void setUp() {
-        DataSource dataSource = new SingleConnectionDataSource("com.mysql.cj.jdbc.Driver","jdbc:mysql://localhost/springbook","root", "root123", true);
-        this.dao = new UserDao();
-
-        this.dao.setDataSource(dataSource);
 
         this.user1 = new User("gyumee", "박성철", "springno1");
         this.user2 = new User("leegw700", "이길원", "springno2");

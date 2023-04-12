@@ -1,7 +1,5 @@
 package me.kimsoar.springbook;
 
-import org.junit.runner.JUnitCore;
-
 import java.sql.SQLException;
 
 public class Main {

@@ -41,7 +41,6 @@ public class UserDaoTest {
         DataSource dataSource = new SingleConnectionDataSource("com.mysql.cj.jdbc.Driver","jdbc:mysql://localhost/testdb","root","root123",true);
         JdbcContext jdbcContext = new JdbcContext();
         jdbcContext.setDataSource(dataSource);
-        this.dao.setJdbcContext(jdbcContext);
         this.dao.setDataSource(dataSource);
 
         this.user1 = new User("gyumee", "박성철", "springno1");

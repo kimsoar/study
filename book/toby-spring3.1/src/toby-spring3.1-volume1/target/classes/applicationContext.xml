@@ -11,8 +11,13 @@
         <property name="password" value="root123" />
     </bean>
 
-    <bean id="userDao" class="me.kimsoar.springbook.dao.UserDao">
+    <bean id="jdbcContext" class="me.kimsoar.springbook.dao.JdbcContext">
         <property name="dataSource" ref="dataSource" />
+    </bean>
+
+    <bean id="userDao" class="me.kimsoar.springbook.dao.userDao">
+        <property name="dataSource" ref="dataSource" />
+        <property name="jdbcContext" ref="jdbcContext" />
     </bean>
 
 </beans>

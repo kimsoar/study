@@ -1,48 +1,44 @@
 package me.kimsoar.springbook.dao;
 
 
-import me.kimsoar.springbook.dao.DataFactory;
-import me.kimsoar.springbook.dao.UserDao;
 import me.kimsoar.springbook.model.User;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.internal.runners.JUnit4ClassRunner;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.support.GenericXmlApplicationContext;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.datasource.SingleConnectionDataSource;
-import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator;
+import org.springframework.jdbc.support.SQLExceptionTranslator;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
-import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-// @DirtiesContext
-/*@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "classpath:test-applicationContext.xml")*/
+@ContextConfiguration(locations = {"/test-applicationContext.xml"})
+@RunWith(SpringJUnit4ClassRunner.class)
 public class UserDaoTest {
 
-    //@Autowired
+    @Autowired
     private UserDao dao;
+
+    @Autowired
+    private DataSource dataSource;
+
     private User user1;
     private User user2;
     private User user3;
 
     @Before
     public void setUp() {
-        this.dao = new UserDao();
-        DataSource dataSource = new SingleConnectionDataSource("com.mysql.cj.jdbc.Driver","jdbc:mysql://localhost/testdb","root","root123",true);
-        JdbcContext jdbcContext = new JdbcContext();
-        jdbcContext.setDataSource(dataSource);
-        this.dao.setDataSource(dataSource);
 
         this.user1 = new User("agyumee", "박성철", "springno1");
         this.user2 = new User("bleegw700", "이길원", "springno2");
@@ -50,7 +46,7 @@ public class UserDaoTest {
     }
 
     @Test
-    public void addAndGet() throws SQLException {
+    public void addAndGet() {
         this.dao.deleteAll();
         assertThat(dao.getCount(), is(0));
 
@@ -70,7 +66,7 @@ public class UserDaoTest {
     }
 
     @Test
-    public void count() throws SQLException {
+    public void count() {
 
         this.dao.deleteAll();
         assertThat(this.dao.getCount(), is(0));
@@ -95,7 +91,7 @@ public class UserDaoTest {
     }
 
     @Test
-    public void getAll() throws SQLException {
+    public void getAll() {
         dao.deleteAll();
 
         List<User> users0 = dao.getAll();
@@ -124,5 +120,28 @@ public class UserDaoTest {
         assertThat(user1.getId(), is(user2.getId()));
         assertThat(user1.getName(), is(user2.getName()));
         assertThat(user1.getPassword(), is(user2.getPassword()));
+    }
+
+    @Test(expected = DuplicateKeyException.class)
+    public void duplicateKey(){
+        dao.deleteAll();
+
+        dao.add(user1);
+        dao.add(user1);
+    }
+
+    @Test
+    public void sqlExceptionTranslate() {
+        dao.deleteAll();
+
+        try {
+            dao.add(user1);
+            dao.add(user1);
+        } catch (DuplicateKeyException ex) {
+            SQLException sqlEx = (SQLException) ex.getRootCause();
+            SQLExceptionTranslator set = new SQLErrorCodeSQLExceptionTranslator(this.dataSource);
+
+            assertThat(set.translate(null, null, sqlEx), instanceOf(DuplicateKeyException.class));
+        }
     }
 }

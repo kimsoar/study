@@ -1,6 +1,7 @@
 package me.kimsoar.springbook.dao;
 
 
+import me.kimsoar.springbook.model.Level;
 import me.kimsoar.springbook.model.User;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -40,9 +41,9 @@ public class UserDaoTest {
     @Before
     public void setUp() {
 
-        this.user1 = new User("agyumee", "박성철", "springno1");
-        this.user2 = new User("bleegw700", "이길원", "springno2");
-        this.user3 = new User("cpark100", "홍길동", "springno3 ");
+        this.user1 = new User("agyumee", "박성철", "springno1", Level.BASIC, 1, 0);
+        this.user2 = new User("bleegw700", "이길원", "springno2", Level.SILVER, 55, 10);
+        this.user3 = new User("cpark100", "홍길동", "springno3 ", Level.GOLD, 100, 40);
     }
 
     @Test
@@ -55,14 +56,10 @@ public class UserDaoTest {
         assertThat(this.dao.getCount(), is(2));
 
         User userget1 = this.dao.get(this.user1.getId());
-        assertThat(this.user1.getName(), is(userget1.getName()));
-        assertThat(this.user1.getPassword(), is(userget1.getPassword()));
+        checkSameUser(userget1, user1);
 
         User userget2 = this.dao.get(this.user2.getId());
-        assertThat(this.user2.getName(), is(userget2.getName()));
-        assertThat(this.user2.getPassword(), is(userget2.getPassword()));
-
-
+        checkSameUser(userget2, user2);
     }
 
     @Test
@@ -120,6 +117,9 @@ public class UserDaoTest {
         assertThat(user1.getId(), is(user2.getId()));
         assertThat(user1.getName(), is(user2.getName()));
         assertThat(user1.getPassword(), is(user2.getPassword()));
+        assertThat(user1.getLevel(), is(user2.getLevel()));
+        assertThat(user1.getLogin(), is(user2.getLogin()));
+        assertThat(user1.getRecommend(), is(user2.getRecommend()));
     }
 
     @Test(expected = DuplicateKeyException.class)
@@ -143,5 +143,25 @@ public class UserDaoTest {
 
             assertThat(set.translate(null, null, sqlEx), instanceOf(DuplicateKeyException.class));
         }
+    }
+
+    @Test
+    public void update() {
+        dao.deleteAll();
+
+        dao.add(user1);
+        dao.add(user2);
+
+        user1.setName("오민규");
+        user1.setPassword("springno6");
+        user1.setLevel(Level.GOLD);
+        user1.setLogin(1000);
+        user1.setRecommend(999);
+        dao.update(user1);
+
+        User user1update = dao.get(user1.getId());
+        checkSameUser(user1, user1update);
+        User user2same = dao.get(user2.getId());
+        checkSameUser(user2, user2same);
     }
 }

@@ -4,11 +4,9 @@ package me.kimsoar.springbook.dao;
 import me.kimsoar.springbook.model.Level;
 import me.kimsoar.springbook.model.User;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator;
@@ -18,7 +16,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.*;

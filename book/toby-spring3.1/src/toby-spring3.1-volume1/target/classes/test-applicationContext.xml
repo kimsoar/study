@@ -8,6 +8,10 @@
         <property name="userDao" ref="userDao" />
         <property name="userLevelUpgradePolicy" ref="userLevelUpgradePolicy" />
         <property name="transactionManager" ref="transactionManager" />
+        <property name="mailSender" ref="mailSender" />
+    </bean>
+
+    <bean id="mailSender" class="me.kimsoar.springbook.service.DummyMailSender">
     </bean>
 
     <bean id="userDao" class="me.kimsoar.springbook.dao.UserDaoJdbc">
@@ -20,6 +24,7 @@
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="dataSource" />
     </bean>
+
 
     <bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
         <property name="driverClass" value="com.mysql.cj.jdbc.Driver" />

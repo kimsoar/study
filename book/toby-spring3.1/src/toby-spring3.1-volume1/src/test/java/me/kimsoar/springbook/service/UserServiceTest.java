@@ -9,14 +9,13 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.PlatformTransactionManager;
 
-
-import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.fail;
 
@@ -24,35 +23,18 @@ import static org.junit.Assert.fail;
 @ContextConfiguration(locations = "/test-applicationContext.xml")
 public class UserServiceTest {
 
-    static class TestUserService extends UserService {
-        private String id;
 
-        private TestUserService(String id) {
-            this.id = id;
-        }
+    @Autowired UserService userService;
 
-        protected void upgradeLevel(User user) {
-            if (user.getId().equals(this.id)) throw new TestUserServiceException();
-            super.upgradeLevel(user);
-        }
-    }
+    @Autowired UserDao userDao;
 
-    static class TestUserServiceException extends RuntimeException {
-    }
 
-    @Autowired
-    UserService userService;
+    @Autowired UserLevelUpgradePolicy userLevelUpgradePolicy;
 
-    @Autowired
-    UserDao userDao;
+    @Autowired PlatformTransactionManager transactionManager;
 
     List<User> users;
 
-    @Autowired
-    UserLevelUpgradePolicy userLevelUpgradePolicy;
-
-    @Autowired
-    DataSource dataSource;
 
     @Before
     public void setUp() {
@@ -112,7 +94,7 @@ public class UserServiceTest {
         UserService testUserService = new TestUserService(users.get(3).getId());
         testUserService.setUserDao(this.userDao);
         testUserService.setUserLevelUpgradePolicy(this.userLevelUpgradePolicy);
-        testUserService.setDataSource(this.dataSource);
+        testUserService.setTransactionManager(this.transactionManager);
         userDao.deleteAll();
         for(User user : users) userDao.add(user);
 
@@ -125,4 +107,22 @@ public class UserServiceTest {
 
         checkLevelUpgrade(users.get(1), false);
     }
+
+    static class TestUserService extends UserService {
+        private String id;
+
+        private TestUserService(String id) {
+            this.id = id;
+        }
+
+        protected void upgradeLevel(User user) {
+            if (user.getId().equals(this.id)) throw new TestUserServiceException();
+            super.upgradeLevel(user);
+        }
+    }
+
+    static class TestUserServiceException extends RuntimeException {
+    }
+
+
 }

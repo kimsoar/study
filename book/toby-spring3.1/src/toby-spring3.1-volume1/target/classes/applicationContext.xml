@@ -7,7 +7,7 @@
     <bean id="userService" class="me.kimsoar.springbook.service.UserService">
         <property name="userDao" ref="userDao" />
         <property name="userLevelUpgradePolicy" ref="userLevelUpgradePolicy" />
-        <property name="dataSource" ref="dataSource" />
+        <property name="transactionManager" ref="transactionManager" />
     </bean>
 
     <bean id="userDao" class="me.kimsoar.springbook.dao.UserDaoJdbc">
@@ -15,6 +15,10 @@
     </bean>
 
     <bean id="userLevelUpgradePolicy" class="me.kimsoar.springbook.service.UserLevelUpgradePolicyImpl">
+    </bean>
+
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource" />
     </bean>
 
 

@@ -3,37 +3,31 @@ package me.kimsoar.springbook.service;
 import me.kimsoar.springbook.dao.UserDao;
 import me.kimsoar.springbook.model.Level;
 import me.kimsoar.springbook.model.User;
-import org.springframework.jdbc.datasource.DataSourceUtils;
-import org.springframework.transaction.support.TransactionSynchronization;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
-import javax.sql.DataSource;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
 public class UserService {
-
-    UserDao userDao;
+    private UserDao userDao;
+    private PlatformTransactionManager transactionManager;
+    private UserLevelUpgradePolicy userLevelUpgradePolicy;
 
     public void setUserDao(UserDao userDao) {
         this.userDao = userDao;
     }
-
-    UserLevelUpgradePolicy userLevelUpgradePolicy;
-
-    public void setUserLevelUpgradePolicy(UserLevelUpgradePolicy userLevelUpgradePolicy) { this.userLevelUpgradePolicy = userLevelUpgradePolicy; }
-
-    private DataSource dataSource;
-    public void setDataSource(DataSource dataSource) {
-        this.dataSource = dataSource;
+    public void setUserLevelUpgradePolicy(UserLevelUpgradePolicy userLevelUpgradePolicy) {
+        this.userLevelUpgradePolicy = userLevelUpgradePolicy;
+    }
+    public void setTransactionManager(PlatformTransactionManager transactionManager) {
+        this.transactionManager = transactionManager;
     }
 
-
     protected void upgradeLevels() throws SQLException {
-        TransactionSynchronizationManager.initSynchronization();
-        Connection c = DataSourceUtils.getConnection(dataSource);
-        c.setAutoCommit(false);
+        TransactionStatus status
+                = this.transactionManager.getTransaction(new DefaultTransactionDefinition());
 
         try {
             List<User> users = userDao.getAll();
@@ -42,17 +36,11 @@ public class UserService {
                     upgradeLevel(user);
                 }
             }
-
-            c.commit();
-        } catch (Exception e) {
-            c.rollback();
+            this.transactionManager.commit(status);
+        } catch (RuntimeException e) {
+            this.transactionManager.rollback(status);
             throw e;
-        } finally {
-            DataSourceUtils.releaseConnection(c, dataSource);
-            TransactionSynchronizationManager.unbindResource(this.dataSource);
-            TransactionSynchronizationManager.clearSynchronization();
         }
-
     }
 
     protected void upgradeLevel(User user) {

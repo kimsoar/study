@@ -14,7 +14,6 @@ import java.util.List;
 
 public class UserServiceImpl implements UserService {
     private UserDao userDao;
-    private PlatformTransactionManager transactionManager;
     private UserLevelUpgradePolicy userLevelUpgradePolicy;
 
     private MailSender mailSender;
@@ -24,9 +23,6 @@ public class UserServiceImpl implements UserService {
     }
     public void setUserLevelUpgradePolicy(UserLevelUpgradePolicy userLevelUpgradePolicy) {
         this.userLevelUpgradePolicy = userLevelUpgradePolicy;
-    }
-    public void setTransactionManager(PlatformTransactionManager transactionManager) {
-        this.transactionManager = transactionManager;
     }
 
     public void setMailSender(MailSender mailSender) {
@@ -62,6 +58,4 @@ public class UserServiceImpl implements UserService {
         if (user.getLevel() == null) user.setLevel(Level.BASIC);
         userDao.add(user);
     }
-
-
 }

@@ -8,6 +8,7 @@ import java.io.IOException;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.CoreMatchers.is;
+import static org.springframework.util.Assert.isTrue;
 
 public class CalcSumTest {
 
@@ -33,5 +34,11 @@ public class CalcSumTest {
     @Test
     public void concateString() throws IOException {
         assertThat(calculator.concatenate(this.numFilepath), is("1234"));
+    }
+
+    @Test
+    public void StringTest() {
+        String str = "testString";
+        assertThat(str.startsWith(""), is(true));
     }
 }
